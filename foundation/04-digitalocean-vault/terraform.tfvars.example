@@ -1,0 +1,28 @@
+# Copy this file to terraform.tfvars and fill in your values
+
+# DigitalOcean API Token. Requires:
+# - Read access to Projects
+# - Read/Write access to Droplets
+# - Read/Write access to SSH Keys
+# - Read/Write access to Firewalls
+do_token = "your_digitalocean_api_token_here"
+
+# DigitalOcean region
+region = "ams3"
+
+# Vault droplet configuration
+droplet_size = "s-1vcpu-2gb"
+image = "ubuntu-24-04-x64"
+
+# SSH key configuration
+create_ssh_key = true
+ssh_public_key = "ssh-ed25519 AAAA... user@example"
+existing_ssh_key_ids = []
+
+# Network security
+ssh_cidr_blocks = ["0.0.0.0/0"]  # Restrict to your admin IPs
+vault_api_port = "8200"
+vault_allowed_cidrs = ["0.0.0.0/0"]  # Restrict to trusted networks
+
+# Cloud-init for Vault installation (no secrets)
+cloud_init = "#cloud-config\npackage_update: true\npackages: [curl]\n"

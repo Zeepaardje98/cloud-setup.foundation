@@ -1,0 +1,19 @@
+# Copy this file to terraform.tfvars and fill in your values
+
+# DigitalOcean API Token. Requires:
+# - Read/Write access to Projects
+# - Read/Write access to Spaces (Object Storage)
+# - Read/Write access to Spaces Keys
+do_token = "your_digitalocean_api_token_here"
+
+# DigitalOcean region
+region = "ams3"  # Options: nyc1, nyc2, nyc3, sfo1, sfo2, sfo3, tor1, ams2, ams3, fra1, lon1, sing1, sgp1, blr1
+
+# Project name (optional - defaults to "Default")
+# Use "Default" to use existing default project, or specify a name to create a new project
+project_name = "Organization Infrastructure"
+
+# Project description, purpose, and environment (only used when creating custom projects)
+project_description = "Shared infrastructure for organization-wide resources"
+project_purpose = "Hold Organization Resources such as remote terraform state"
+project_environment = "production"
