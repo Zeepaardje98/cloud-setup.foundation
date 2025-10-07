@@ -36,15 +36,6 @@ data "terraform_remote_state" "do_foundation" {
   }
 }
 
-# Organization teams
-resource "github_team" "teams" {
-  for_each = var.organization_teams
-  
-  name        = each.value.name
-  description = each.value.description
-  privacy     = each.value.privacy
-}
-
 # Organization secrets
 # Expose DigitalOcean Spaces CI credentials as GitHub Organization secrets
 resource "github_actions_organization_secret" "spaces_access_key_ci" {
@@ -57,13 +48,4 @@ resource "github_actions_organization_secret" "spaces_secret_key_ci" {
   secret_name     = "DO_SPACES_SECRET_KEY_CI"
   visibility      = "private"
   plaintext_value = data.terraform_remote_state.do_foundation.outputs.bucket_spaces_secret_key_ci
-}
-
-# Organization variables
-resource "github_actions_organization_variable" "variables" {
-  for_each = var.organization_variables
-  
-  variable_name = each.key
-  value         = each.value.value
-  visibility    = each.value.visibility
 }

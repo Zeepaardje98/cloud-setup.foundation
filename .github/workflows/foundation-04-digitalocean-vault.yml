@@ -1,0 +1,52 @@
+name: foundation-04-digitalocean-vault
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'deployment/foundation/terraform/04-digitalocean-vault/**'
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.SPACES_ACCESS_KEY }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.SPACES_SECRET_KEY }}
+      AWS_REGION: us-east-1
+      AWS_ENDPOINT_URL_S3: https://ams3.digitaloceanspaces.com
+
+      TF_VAR_do_token: ${{ secrets.DIGITALOCEAN_TOKEN }}
+      TF_VAR_region: ${{ vars.DO_REGION || 'nyc1' }}
+      TF_VAR_droplet_size: ${{ vars.VAULT_DROPLET_SIZE || 's-1vcpu-2gb' }}
+      TF_VAR_image: ${{ vars.VAULT_IMAGE || 'ubuntu-24-04-x64' }}
+      TF_VAR_create_ssh_key: "true"
+      TF_VAR_ssh_public_key: ${{ secrets.VAULT_SSH_PUBLIC_KEY }}
+      TF_VAR_ssh_cidr_blocks: ${{ vars.SSH_CIDR_BLOCKS || '["0.0.0.0/0"]' }}
+      TF_VAR_vault_allowed_cidrs: ${{ vars.VAULT_ALLOWED_CIDRS || '["0.0.0.0/0"]' }}
+
+      ANSIBLE_USER: root
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Prepare Ansible SSH key
+        working-directory: deployment/foundation/terraform/04-digitalocean-vault
+        run: |
+          echo "${{ secrets.VAULT_SSH_PRIVATE_KEY }}" > id_ed25519
+          chmod 600 id_ed25519
+          echo "ANSIBLE_EXTRA_VARS=ansible_ssh_private_key_file=$(pwd)/id_ed25519" >> $GITHUB_ENV
+
+      - name: Apply Vault stack
+        working-directory: deployment/foundation/terraform/04-digitalocean-vault
+        run: |
+          ./apply.sh
+
+

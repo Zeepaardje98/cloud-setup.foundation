@@ -28,24 +28,27 @@ else
 	exit 1
 fi
 
-# Initialize terraform with remote backend if credentials are available
-if check_aws_credentials "${AWS_CREDENTIALS_FILE}" "${AWS_PROFILE}"; then
-	echo "[INFO] Terraform init attempt with remote state (uses backend)"
+# Enforce CI-only execution: require CI-provided Spaces credentials
+if [[ -z "${AWS_ACCESS_KEY_ID:-}" || -z "${AWS_SECRET_ACCESS_KEY:-}" ]]; then
+	echo "[ERROR] This stack (04) must run in CI with Secrets. Missing AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY."
+	exit 1
+fi
 
-	if [[ ! -f "${SHARED_BACKEND_HCL}" ]]; then
-		echo "[ERROR] Backend file not found: ${SHARED_BACKEND_HCL}"
-		exit 1
-	fi
+echo "[INFO] Using CI-provided Spaces credentials from environment."
 
-	export AWS_PROFILE
-	export AWS_SHARED_CREDENTIALS_FILE="${AWS_CREDENTIALS_FILE}"
+if [[ ! -f "${SHARED_BACKEND_HCL}" ]]; then
+	echo "[ERROR] Backend file not found: ${SHARED_BACKEND_HCL}"
+	exit 1
+fi
 
-	if ! terraform init -backend-config="${SHARED_BACKEND_HCL}" -backend-config="key=${STATE_KEY}"; then
-		echo "[WARNING] Terraform init with remote state failed, exiting."
-		exit 1
-	else
-		echo "[INFO] Terraform init with remote state successful."
-	fi
+# Ensure optional session token is passed through if present
+if [[ -n "${AWS_SESSION_TOKEN:-}" ]]; then export AWS_SESSION_TOKEN; fi
+
+if ! terraform init -backend-config="${SHARED_BACKEND_HCL}" -backend-config="key=${STATE_KEY}"; then
+	echo "[WARNING] Terraform init with remote state failed, exiting."
+	exit 1
+else
+	echo "[INFO] Terraform init with remote state successful."
 fi
 
 # Plan, show, and apply with confirmation

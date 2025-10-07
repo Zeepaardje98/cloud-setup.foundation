@@ -5,7 +5,10 @@ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "${ROOT_DIR}"
 
 # Paths
+# Helper script for common functions
 COMMON_SH="${ROOT_DIR}/../../scripts/common.sh"
+
+# Shared backend.hcl lives two levels up at deployment/terraform/backend.hcl
 SHARED_BACKEND_HCL="${ROOT_DIR}/../backend.hcl"
 
 # State key for this stack
@@ -23,21 +26,22 @@ else
   exit 1
 fi
 
-if check_aws_credentials "${AWS_CREDENTIALS_FILE}" "${AWS_PROFILE}"; then
-  echo "[INFO] Terraform init with remote state"
+if [[ -z "${AWS_ACCESS_KEY_ID:-}" || -z "${AWS_SECRET_ACCESS_KEY:-}" ]]; then
+  echo "[ERROR] Missing AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY in environment."
+  echo "[HINT] Run apply_with_local_credentials.sh for local usage, or provide CI secrets."
+  exit 1
+fi
 
-  if [[ ! -f "${SHARED_BACKEND_HCL}" ]]; then
-    echo "[ERROR] Backend file not found: ${SHARED_BACKEND_HCL}"
-    exit 1
-  fi
+if [[ ! -f "${SHARED_BACKEND_HCL}" ]]; then
+  echo "[ERROR] Backend file not found: ${SHARED_BACKEND_HCL}"
+  exit 1
+fi
 
-  export AWS_PROFILE
-  export AWS_SHARED_CREDENTIALS_FILE="${AWS_CREDENTIALS_FILE}"
+if [[ -n "${AWS_SESSION_TOKEN:-}" ]]; then export AWS_SESSION_TOKEN; fi
 
-  if ! terraform init -backend-config="${SHARED_BACKEND_HCL}" -backend-config="key=${STATE_KEY}"; then
-    echo "[WARNING] Terraform init failed"
-    exit 1
-  fi
+if ! terraform init -backend-config="${SHARED_BACKEND_HCL}" -backend-config="key=${STATE_KEY}"; then
+  echo "[WARNING] Terraform init failed"
+  exit 1
 fi
 
 terraform_plan_show_apply ".tfplan.local"

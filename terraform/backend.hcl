@@ -5,7 +5,6 @@ endpoints = {
 }
 
 bucket  = "organization-infrastructure.terraform-state-bucket"
-profile = "digitalocean-spaces"
 region  = "us-east-1"
 
 # AWS-specific checks disabled for Spaces

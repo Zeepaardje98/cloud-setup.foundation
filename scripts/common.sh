@@ -5,47 +5,130 @@ set -euo pipefail
 
 # check_aws_credentials AWS_CREDENTIALS_FILE AWS_PROFILE
 # Returns 0 if credentials file exists and contains the profile, else 1
-check_aws_credentials() {
+check_local_aws_credentials() {
   local credentials_file="$1"
   local profile_name="$2"
 
-  echo "[INFO] Checking if AWS credentials exist with DigitalOcean Spaces profile."
+  echo "[INFO] Checking if AWS credentials exist with DigitalOcean Spaces profile." >&2
 
   if [[ -f "${credentials_file}" ]]; then
     if grep -q "\\[${profile_name}\\]" "${credentials_file}"; then
-      echo "[SUCCESS] Found AWS credentials file with DigitalOcean Spaces profile."
+      echo "[SUCCESS] Found AWS credentials file with DigitalOcean Spaces profile." >&2
       return 0
     else
-      echo "[WARNING] AWS credentials file found, but does not have DigitalOcean Spaces profile."
+      echo "[WARNING] AWS credentials file found, but does not have DigitalOcean Spaces profile." >&2
     fi
   else
-    echo "[WARNING] AWS credentials file not found: ${credentials_file}"
+    echo "[WARNING] AWS credentials file not found: ${credentials_file}" >&2
   fi
 
   return 1
 }
 
-# terraform_plan_show_apply PLAN_FILE
-# Creates a plan, shows it, and prompts to apply
-terraform_plan_show_apply() {
-  local plan_file="$1"
+get_local_aws_credentials() {
+  local credentials_file="$1"
+  local profile_name="$2"
+  local -n aws_access_key_id="$3"
+  local -n aws_secret_access_key="$4"
+
+  echo "[INFO] Getting local AWS credentials for profile: ${profile_name}" >&2
+  
+  # Check if awk is installed
+  if ! command -v awk >/dev/null 2>&1; then
+    echo "[ERROR] awk is required" >&2
+    exit 1
+  fi
+
+  # Check if local credentials file exists
+  if ! check_local_aws_credentials "${credentials_file}" "${profile_name}"; then
+    echo "[ERROR] Credentials file not found: ${credentials_file}" >&2
+    return 1
+  fi
+
+  # Read AWS keys from local credentials file
+  aws_access_key_id=$(awk -v p="${profile_name}" 'BEGIN{f=0} $0=="["p"]"{f=1;next} f&&/^aws_access_key_id/{print $3; exit}' "${credentials_file}" || true)
+  aws_secret_access_key=$(awk -v p="${profile_name}" 'BEGIN{f=0} $0=="["p"]"{f=1;next} f&&/^aws_secret_access_key/{print $3; exit}' "${credentials_file}" || true)
+  
+  if [[ -z "${aws_access_key_id}" || -z "${aws_secret_access_key}" ]]; then
+    echo "[ERROR] Failed to read AWS credentials for profile ${profile_name} from ${credentials_file}" >&2
+    return 1
+  fi
+
+  return 0
+}
+
+update_local_aws_credentials() {
+  local credentials_file="$1"
+  local profile_name="$2"
+  local access_key_local="$3"
+  local secret_key_local="$4"
+
+  echo "[INFO] Updating local AWS credentials file (profile: ${profile_name})." >&2
+
+  local credentials_dir
+  credentials_dir="$(dirname "${credentials_file}")"
+  mkdir -p "${credentials_dir}"
+
+  # Create file if missing
+  if [[ ! -f "${credentials_file}" ]]; then
+    touch "${credentials_file}"
+  fi
+
+  # Remove existing profile block (if present)
+  # shellcheck disable=SC2016
+  sed -i.bak "/\\[${profile_name}\\]/,/^\\[/ { /\\[${profile_name}\\]/d; /^\\[/!d; }" "${credentials_file}" || true
+
+  # Append updated profile block
+  {
+    echo "[${profile_name}]"
+    echo "aws_access_key_id = ${access_key_local}"
+    echo "aws_secret_access_key = ${secret_key_local}"
+  } >> "${credentials_file}"
+
+  rm -f "${credentials_file}.bak"
+  echo "[INFO] Local AWS credentials updated." >&2
+}
+
+terraform_deploy() {
+  local shared_backend_hcl="$1"
+  local state_key="$2"
+
+  echo "[INFO] Terraform deploying with shared backend config: ${shared_backend_hcl} and state key: ${state_key}" >&2
+  
+  # Validate shared backend file exists
+  if [[ ! -f "${shared_backend_hcl}" ]]; then
+    echo "[ERROR] Backend file for remote state not found: ${shared_backend_hcl}"
+    exit 1
+  fi
+  # Validate AWS credentials are present
+  if [[ -z "${AWS_ACCESS_KEY_ID:-}" || -z "${AWS_SECRET_ACCESS_KEY:-}" ]]; then
+    echo "[ERROR] Missing AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY in environment."
+    exit 1
+  fi
+
+  # Initialize passing shared backend config and a unique key for this stack
+  if ! terraform init -backend-config="${shared_backend_hcl}" -backend-config="key=${state_key}" -migrate-state; then
+    echo "[ERROR] Terraform init with remote state failed." >&2
+    exit 1
+  else
+    echo "[INFO] Terraform init with remote state successful." >&2
+  fi
 
   echo "[INFO] Terraform plan"
-  terraform plan -out "${plan_file}" >/dev/null
+  terraform plan -out ".tfplan.local" >/dev/null
 
-  echo "[INFO] Terraform showing plan preview."
-  terraform show "${plan_file}" || true
+  echo "[INFO] Terraform showing plan preview." >&2
+  terraform show ".tfplan.local" || true
 
   read -r -p "Proceed with apply using this plan? [y/N] " CONFIRM
   case "${CONFIRM}" in
     y|Y|yes|YES)
-      terraform apply "${plan_file}"
+      terraform apply ".tfplan.local"
       ;;
     *)
-      echo "[INFO] Aborting by user choice."
+      echo "[INFO] Aborting by user choice." >&2
       exit 0
       ;;
   esac
 }
-
 

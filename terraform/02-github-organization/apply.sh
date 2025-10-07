@@ -11,12 +11,8 @@ COMMON_SH="${ROOT_DIR}/../../scripts/common.sh"
 # Shared backend.hcl lives two levels up at deployment/terraform/backend.hcl
 SHARED_BACKEND_HCL="${ROOT_DIR}/../backend.hcl"
 
-# State key for this stack (unique per deployment)
+# State key for this stack
 STATE_KEY="foundation/02-github-organization/terraform.tfstate"
-
-# AWS credentials file for DigitalOcean Spaces backend
-AWS_CREDENTIALS_FILE="${ROOT_DIR}/../.aws/credentials"
-AWS_PROFILE="digitalocean-spaces"
 
 # Load common helpers
 if [[ -f "${COMMON_SH}" ]]; then
@@ -27,26 +23,5 @@ else
   exit 1
 fi
 
-if check_aws_credentials "${AWS_CREDENTIALS_FILE}" "${AWS_PROFILE}"; then
-  echo "[INFO] Terraform init attempt with remote state (uses backend)"
-
-  # Validate shared backend file exists
-  if [[ ! -f "${SHARED_BACKEND_HCL}" ]]; then
-    echo "[ERROR] Backend file not found: ${SHARED_BACKEND_HCL}"
-    exit 1
-  fi
-
-  # Export Spaces credentials location for Terraform backend
-  export AWS_PROFILE
-  export AWS_SHARED_CREDENTIALS_FILE="${AWS_CREDENTIALS_FILE}"
-
-  if ! terraform init -backend-config="${SHARED_BACKEND_HCL}" -backend-config="key=${STATE_KEY}"; then
-      echo "[WARNING] Terraform init with remote state failed, exiting."
-      exit 1
-  else
-      echo "[INFO] Terraform init with remote state successful."
-  fi
-fi
-
-terraform_plan_show_apply ".tfplan.local"
-
+# Standard init/plan/show/apply
+terraform_deploy "${SHARED_BACKEND_HCL}" "${STATE_KEY}"
