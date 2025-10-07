@@ -18,7 +18,7 @@ STATE_KEY="foundation/01-digitalocean-remote-state/terraform.tfstate"
 BACKEND_FILE="backend.tf"
 
 # AWS credentials file for DigitalOcean Spaces backend
-AWS_CREDENTIALS_FILE="${ROOT_DIR}/../../.aws/credentials"
+AWS_CREDENTIALS_FILE="${ROOT_DIR}/../.aws/credentials"
 AWS_PROFILE="digitalocean-spaces"
 
 # Load common helpers

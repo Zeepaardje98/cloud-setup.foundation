@@ -1,0 +1,65 @@
+# Copy this file to terraform.tfvars and fill in your values
+
+# GitHub Authentication
+github_token = "your_github_personal_access_token_here"
+github_organization = "your-github-organization"
+
+# Organization Teams
+# organization_teams = {
+#   "platform-admins" = {
+#     name        = "Platform Admins"
+#     description = "Small group of trusted owners with full org administration"
+#     privacy     = "secret"
+#   }
+#   "security" = {
+#     name        = "Security"
+#     description = "Handles security reviews, secret scanning, and vulnerability triage"
+#     privacy     = "secret"
+#   }
+#   "devops" = {
+#     name        = "DevOps"
+#     description = "Owns CI/CD, infrastructure pipelines, and deployment tooling"
+#     privacy     = "closed"
+#   }
+#   "backend" = {
+#     name        = "Backend"
+#     description = "Builds and maintains backend services and APIs"
+#     privacy     = "closed"
+#   }
+#   "frontend" = {
+#     name        = "Frontend"
+#     description = "Builds and maintains web UI and client apps"
+#     privacy     = "closed"
+#   }
+#   "qa" = {
+#     name        = "QA"
+#     description = "Validates releases and maintains test suites and environments"
+#     privacy     = "closed"
+#   }
+#   "release-managers" = {
+#     name        = "Release Managers"
+#     description = "Controls release approvals and emergency rollback authority"
+#     privacy     = "closed"
+#   }
+#   "read-only" = {
+#     name        = "Read Only"
+#     description = "Auditors and stakeholders with organization-wide read access"
+#     privacy     = "closed"
+#   }
+#   "bots" = {
+#     name        = "Bots"
+#     description = "Automation identities (GitHub Apps/machine users) grouped for policy"
+#     privacy     = "secret"
+#   }
+# }
+
+# Organization Secrets
+# organization_secrets = {
+# }
+
+# Organization Variables
+# organization_variables = {
+# }
+
+ 
+

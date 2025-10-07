@@ -9,10 +9,10 @@ COMMON_SH="${ROOT_DIR}/../scripts/common.sh"
 SHARED_BACKEND_HCL="${ROOT_DIR}/../../backend.hcl"
 
 # Unique state key for this stack
-STATE_KEY="foundation/02-digitalocean-vault/terraform.tfstate"
+STATE_KEY="foundation/04-digitalocean-vault/terraform.tfstate"
 
-# AWS credentials file for DigitalOcean Spaces backend
-AWS_CREDENTIALS_FILE="${ROOT_DIR}/../../.aws/credentials"
+# AWS credentials file for DigitalOcean Spaces backend(remote terraform state)
+AWS_CREDENTIALS_FILE="${ROOT_DIR}/../.aws/credentials"
 AWS_PROFILE="digitalocean-spaces"
 
 # Ansible playbook path
