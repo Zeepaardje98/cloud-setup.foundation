@@ -92,24 +92,25 @@ update_local_aws_credentials() {
 terraform_deploy() {
   local shared_backend_hcl="$1"
   local state_key="$2"
+  local init_args="${3:-}"
 
   echo "[INFO] Terraform deploying with shared backend config: ${shared_backend_hcl} and state key: ${state_key}" >&2
   
   # Validate shared backend file exists
   if [[ ! -f "${shared_backend_hcl}" ]]; then
     echo "[ERROR] Backend file for remote state not found: ${shared_backend_hcl}"
-    exit 1
+    return 1
   fi
   # Validate AWS credentials are present
   if [[ -z "${AWS_ACCESS_KEY_ID:-}" || -z "${AWS_SECRET_ACCESS_KEY:-}" ]]; then
     echo "[ERROR] Missing AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY in environment."
-    exit 1
+    return 1
   fi
 
   # Initialize passing shared backend config and a unique key for this stack
-  if ! terraform init -backend-config="${shared_backend_hcl}" -backend-config="key=${state_key}" -migrate-state; then
+  if ! terraform init -backend-config="${shared_backend_hcl}" -backend-config="key=${state_key}" ${init_args:-}; then
     echo "[ERROR] Terraform init with remote state failed." >&2
-    exit 1
+    return 1
   else
     echo "[INFO] Terraform init with remote state successful." >&2
   fi
@@ -127,7 +128,7 @@ terraform_deploy() {
       ;;
     *)
       echo "[INFO] Aborting by user choice." >&2
-      exit 0
+      return 2
       ;;
   esac
 }

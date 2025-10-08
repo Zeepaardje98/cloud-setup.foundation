@@ -1,0 +1,46 @@
+name: foundation-03-github-foundation-repo
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'deployment/foundation/terraform/03-github-foundation-repo/**'
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    env:
+      # AWS variables, used for access to spaces 'remote state' bucket for terraform. Added when creating the github
+      # repository through terraform in 03-github-foundation-repo.yml
+      AWS_ACCESS_KEY_ID: ${{ secrets.SPACES_ACCESS_KEY }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.SPACES_SECRET_KEY }}
+
+      # GitHub organization PAT used for creating the GitHub repository and adding repository variables.
+      TF_VAR_github_token: ${{ secrets.GITHUB_TOKEN_PAT }}
+
+      # GitHub repository variables, added when creating the github repository through terraform in 03-github-foundation-repo.yml
+      TF_VAR_repository_name: ${{ vars.REPOSITORY_NAME }}
+      TF_VAR_repository_description: ${{ vars.REPOSITORY_DESCRIPTION }}
+      TF_VAR_repository_visibility: ${{ vars.REPOSITORY_VISIBILITY }}
+      TF_VAR_auto_init: ${{ vars.AUTO_INIT }}
+      TF_VAR_topics: ${{ vars.TOPICS }}
+      TF_VAR_template_owner: ${{ vars.TEMPLATE_OWNER }}
+      TF_VAR_template_repository: ${{ vars.TEMPLATE_REPOSITORY }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Apply foundation repo stack
+        working-directory: deployment/foundation/terraform/03-github-foundation-repo
+        run: |
+          ./apply.sh
+
+
