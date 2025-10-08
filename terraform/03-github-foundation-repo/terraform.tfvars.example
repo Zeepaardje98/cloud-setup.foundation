@@ -2,7 +2,6 @@
 
 # GitHub Authentication
 github_token = "your_github_personal_access_token_here"
-github_owner = "your-github-organization"
 
 # Repository Settings
 # repository_name        = "platform-foundation"

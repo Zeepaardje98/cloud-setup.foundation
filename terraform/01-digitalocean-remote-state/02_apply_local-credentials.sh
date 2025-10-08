@@ -7,12 +7,15 @@ cd "${ROOT_DIR}"
 # Load helpers
 COMMON_SH="${ROOT_DIR}/../../scripts/common.sh"
 if [[ -f "${COMMON_SH}" ]]; then
-  # shellcheck disable=SC1090
   source "${COMMON_SH}"
 else
   echo "[ERROR] Helper not found at path: ${COMMON_SH}"
   exit 1
 fi
+
+# Ensure backend file is present(since the run using local state can disable it)
+BACKEND_FILE="backend.tf"
+if [[ -f ${BACKEND_FILE}.disabled ]]; then mv "${BACKEND_FILE}.disabled" "${BACKEND_FILE}"; fi
 
 # Get local AWS credentials needed for remote state
 AWS_CREDENTIALS_FILE="${ROOT_DIR}/../.aws/credentials"
@@ -27,6 +30,7 @@ fi
 # Deploy the terraform project with the local AWS credentials for remote state
 export AWS_ACCESS_KEY_ID
 export AWS_SECRET_ACCESS_KEY
+
 exec ./apply.sh
 
 # Update local AWS credentials after the new deployment

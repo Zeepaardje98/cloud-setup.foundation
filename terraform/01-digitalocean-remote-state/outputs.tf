@@ -32,5 +32,31 @@ output "bucket_spaces_secret_key_ci" {
   description = "Bucket-specific Spaces secret key for remote state backend (CI/CD usage)"
 }
 
+# Expose input variables for use by other stacks
+output "project_name" {
+  value       = var.project_name
+  description = "Project name used in this stack"
+}
+
+output "project_description" {
+  value       = var.project_description
+  description = "Project description used in this stack"
+}
+
+output "project_purpose" {
+  value       = var.project_purpose
+  description = "Project purpose used in this stack"
+}
+
+output "project_environment" {
+  value       = var.project_environment
+  description = "Project environment used in this stack"
+}
+
+output "region" {
+  value       = var.region
+  description = "DigitalOcean region used in this stack"
+}
+
 ## Vault outputs removed; Vault is managed in a separate stack
 

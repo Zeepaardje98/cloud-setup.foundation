@@ -26,7 +26,6 @@ data "terraform_remote_state" "do_foundation" {
     bucket                      = "organization-infrastructure.terraform-state-bucket"
     key                         = "foundation/01-digitalocean-remote-state/terraform.tfstate"
     region                      = "us-east-1"
-    profile                     = "digitalocean-spaces"
     skip_credentials_validation = true
     skip_requesting_account_id  = true
     skip_metadata_api_check     = true
@@ -48,4 +47,11 @@ resource "github_actions_organization_secret" "spaces_secret_key_ci" {
   secret_name     = "DO_SPACES_SECRET_KEY_CI"
   visibility      = "private"
   plaintext_value = data.terraform_remote_state.do_foundation.outputs.bucket_spaces_secret_key_ci
+}
+
+# Organization variables
+resource "github_actions_organization_variable" "organization_name" {
+  variable_name = "ORGANIZATION_NAME"
+  visibility      = "private"
+  value           = var.github_organization
 }

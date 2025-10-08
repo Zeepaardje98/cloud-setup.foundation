@@ -22,5 +22,3 @@ output "repository_clone_url_ssh" {
   description = "SSH clone URL of the repository"
   value       = github_repository.foundation.ssh_clone_url
 }
-
-
