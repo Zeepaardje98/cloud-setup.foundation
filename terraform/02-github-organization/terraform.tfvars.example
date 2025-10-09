@@ -4,7 +4,6 @@
 # - Repository access: Public repositories
 # - Organizations - Read/Write to Secrets
 # - Organizations - Read/Write to Variables
-# - 
 github_token = "your_github_personal_access_token_here"
 
 # GitHub organisation name. Should be the resource owner of the PAT.
