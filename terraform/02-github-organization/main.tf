@@ -13,7 +13,7 @@ terraform {
 # GitHub provider configuration
 provider "github" {
   token = var.github_token
-  owner = var.github_organization
+  owner = var.github_organisation
 }
 
 # Read outputs from the DigitalOcean foundation state stored in Spaces
@@ -23,7 +23,7 @@ data "terraform_remote_state" "do_foundation" {
     endpoints = {
       s3 = "https://ams3.digitaloceanspaces.com"
     }
-    bucket                      = "organization-infrastructure.terraform-state-bucket"
+    bucket                      = "organisation-infrastructure.terraform-state-bucket"
     key                         = "foundation/01-digitalocean-remote-state/terraform.tfstate"
     region                      = "us-east-1"
     skip_credentials_validation = true
@@ -50,8 +50,8 @@ resource "github_actions_organization_secret" "spaces_secret_key_ci" {
 }
 
 # Organization variables
-resource "github_actions_organization_variable" "organization_name" {
-  variable_name = "ORGANIZATION_NAME"
+resource "github_actions_organization_variable" "organisation_name" {
+  variable_name = "ORGANISATION_NAME"
   visibility      = "private"
-  value           = var.github_organization
+  value           = var.github_organisation
 }

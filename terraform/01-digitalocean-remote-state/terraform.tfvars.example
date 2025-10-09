@@ -11,7 +11,8 @@ region = "ams3"  # Options: nyc1, nyc2, nyc3, sfo1, sfo2, sfo3, tor1, ams2, ams3
 
 # Project name.
 # IMPORTANT: If you change this, also make sure to change the s3 backend configuration(backend.hcl) bucket,
-# since the remote state bucket name is derived partly from the project_name.
+# since the remote state bucket name is derived partly from the project_name. 02-github-organization/main.tf and
+# 03-github-foundation-repo/main.tf also use the same remote bucket name.
 project_name = "Organisation Infrastructure"
 
 # Project description, purpose, and environment.

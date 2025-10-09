@@ -10,13 +10,13 @@ terraform {
 }
 
 # Read the 02-github-organization step inputs from its remote state
-data "terraform_remote_state" "github_organization" {
+data "terraform_remote_state" "github_organisation" {
   backend = "s3"
   config = {
     endpoints = {
       s3 = "https://ams3.digitaloceanspaces.com"
     }
-    bucket                      = "organization-infrastructure.terraform-state-bucket"
+    bucket                      = "organisation-infrastructure.terraform-state-bucket"
     key                         = "foundation/02-github-organization/terraform.tfstate"
     region                      = "us-east-1"
     skip_credentials_validation = true
@@ -31,7 +31,7 @@ data "terraform_remote_state" "github_organization" {
 # Configure the GitHub provider with the same organization as the 02-github-organization step
 provider "github" {
   token = var.github_token
-  owner = data.terraform_remote_state.github_organization.outputs.github_organization
+  owner = data.terraform_remote_state.github_organisation.outputs.github_organisation
 }
 
 # Create the GitHub repository
@@ -64,7 +64,7 @@ data "terraform_remote_state" "do_foundation" {
     endpoints = {
       s3 = "https://ams3.digitaloceanspaces.com"
     }
-    bucket                      = "organization-infrastructure.terraform-state-bucket"
+    bucket                      = "organisation-infrastructure.terraform-state-bucket"
     key                         = "foundation/01-digitalocean-remote-state/terraform.tfstate"
     region                      = "us-east-1"
     skip_credentials_validation = true

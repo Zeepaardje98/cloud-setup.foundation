@@ -7,7 +7,7 @@ cd "${ROOT_DIR}"
 # Shared backend.hcl lives two levels up at deployment/terraform/backend.hcl
 SHARED_BACKEND_HCL="${ROOT_DIR}/../backend.hcl"
 # State key for this stack
-STATE_KEY="foundation/02-github-organization/terraform.tfstate"
+STATE_KEY="foundation/02-github-organisation/terraform.tfstate"
 
 # Load common helpers
 COMMON_SH="${ROOT_DIR}/../../scripts/common.sh"

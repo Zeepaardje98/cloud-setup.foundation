@@ -1,4 +1,4 @@
-output "github_organization" {
+output "github_organisation" {
   description = "GitHub organization name"
-  value       = var.github_organization
+  value       = var.github_organisation
 }
