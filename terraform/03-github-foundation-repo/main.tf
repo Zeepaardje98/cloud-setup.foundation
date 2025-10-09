@@ -17,7 +17,7 @@ data "terraform_remote_state" "github_organisation" {
       s3 = "https://ams3.digitaloceanspaces.com"
     }
     bucket                      = "organisation-infrastructure.terraform-state-bucket"
-    key                         = "foundation/02-github-organization/terraform.tfstate"
+    key                         = "foundation/02-github-organisation/terraform.tfstate"
     region                      = "us-east-1"
     skip_credentials_validation = true
     skip_requesting_account_id  = true
@@ -53,7 +53,7 @@ resource "github_repository" "foundation" {
 resource "github_actions_variable" "github_organization" {
   repository  = github_repository.foundation.name
   variable_name = "ORGANIZATION_NAME"
-  value       = data.terraform_remote_state.github_organization.outputs.github_organization
+  value       = data.terraform_remote_state.github_organisation.outputs.github_organisation
 }
 
 
