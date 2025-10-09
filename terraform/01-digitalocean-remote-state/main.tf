@@ -8,12 +8,12 @@ terraform {
   }
 }
 
-# Base DO provider
+# Base DO provider.
 provider "digitalocean" {
   token = var.do_token
 }
 
-# Creates project
+# Creates project.
 module "project" {
   source = "./modules/project"
 
@@ -29,7 +29,7 @@ module "project" {
   }
 }
 
-# General Spaces key
+# General Spaces key.
 module "general_spaces_key" {
   source = "./modules/general_spaces_key"
 
@@ -38,7 +38,7 @@ module "general_spaces_key" {
   }
 }
 
-# Create an aliased provider for state bucket creation using general spaces key credentials
+# Create an aliased provider for state bucket creation using general spaces key credentials.
 provider "digitalocean" {
   alias = "DO_spaces_key"
   token = var.do_token
@@ -47,7 +47,7 @@ provider "digitalocean" {
   spaces_secret_key = module.general_spaces_key.secret_key
 }
 
-# Bucket + bucket-specific key
+# Bucket + bucket-specific key.
 module "state_bucket" {
   source = "./modules/state_bucket"
 
@@ -60,5 +60,3 @@ module "state_bucket" {
 
   depends_on = [module.project, module.general_spaces_key]
 }
-
-## Vault is now managed in a separate stack (see deployment/terraform/projects or a dedicated root)

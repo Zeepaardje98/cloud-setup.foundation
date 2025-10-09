@@ -1,35 +1,35 @@
 variable "do_token" {
-  description = "DigitalOcean API token"
+  description = "DigitalOcean API token."
   type        = string
   sensitive   = true
 }
 
 variable "region" {
-  description = "DigitalOcean region"
+  description = "DigitalOcean region."
   type        = string
   default     = "nyc1"
 }
 
 variable "project_name" {
-  description = "Project name for stage1"
+  description = "Project name given to the project created in this stack."
   type        = string
-  default     = "Default"
+  default     = "Organisation Infrastructure"
 }
 
 variable "project_description" {
-  description = "Project description for stage1"
+  description = "Project description given to the project created in this stack."
   type        = string
-  default     = "Project for organization infrastructure"
+  default     = "Shared infrastructure for organisation-wide resources"
 }
 
 variable "project_purpose" {
-  description = "Project purpose for stage1"
+  description = "Project purpose given to the project created in this stack."
   type        = string
-  default     = "Hold Organization Resources such as remote terraform state"
+  default     = "Hold Organization Resources such as remote terraform state, which are shared throughout the organisation."
 }
 
 variable "project_environment" {
-  description = "Project environment for stage1"
+  description = "Project environment given to the project created in this stack."
   type        = string
   default     = "development"
 }

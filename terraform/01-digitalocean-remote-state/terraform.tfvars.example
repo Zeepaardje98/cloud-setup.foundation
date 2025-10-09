@@ -1,22 +1,20 @@
-# Copy this file to terraform.tfvars and fill in your values
+# Copy this file to terraform.tfvars and fill in your values.
 
-# DigitalOcean API Token. Requires:
+# DigitalOcean API token. Requires:
 # - Read/Write access to Projects
 # - Read/Write access to Spaces (Object Storage)
 # - Read/Write access to Spaces Keys
 do_token = "your_digitalocean_api_token_here"
 
-# DigitalOcean region (defaults to "nyc1")
+# DigitalOcean region (defaults to "nyc1"). Will be the region of created resources such as the remote state bucket
 region = "ams3"  # Options: nyc1, nyc2, nyc3, sfo1, sfo2, sfo3, tor1, ams2, ams3, fra1, lon1, sing1, sgp1, blr1
 
-# Project name (defaults to "Default")
-# Use "Default" to use existing default project, or specify a name to create a new project.
-#
+# Project name.
 # IMPORTANT: If you change this, also make sure to change the s3 backend configuration(backend.hcl) bucket,
 # since the remote state bucket name is derived partly from the project_name.
 project_name = "Organisation Infrastructure"
 
-# Project description, purpose, and environment (only used when creating custom projects)
-project_description = "Shared infrastructure for organization-wide resources"
-project_purpose = "Hold Organization Resources such as remote terraform state"
+# Project description, purpose, and environment.
+project_description = "Shared infrastructure for organisation-wide resources"
+project_purpose = "Hold Organization Resources such as remote terraform state, which are shared throughout the organisation."
 project_environment = "production"
