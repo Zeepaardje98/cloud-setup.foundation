@@ -77,15 +77,4 @@ else
 fi
 
 # Clean up local state
-echo "[INFO] Cleaning up local Terraform plan and state files securely."
-if command -v shred >/dev/null 2>&1; then
-  if [[ -f .tfplan.local ]]; then shred -u -n 3 -z -- .tfplan.local; fi
-  if [[ -f terraform.tfstate ]]; then shred -u -n 3 -z -- terraform.tfstate; fi
-  if [[ -f terraform.tfstate.backup ]]; then shred -u -n 3 -z -- terraform.tfstate.backup; fi
-  if [[ -d .terraform ]]; then
-    find .terraform -type f -exec shred -u -n 3 -z {} + || true
-    rm -rf -- .terraform || true
-  fi
-else
-  echo "[WARNING] shred is not installed, skipping secure deletion of local Terraform plan and state files."
-fi
+cleanup_local_state .
