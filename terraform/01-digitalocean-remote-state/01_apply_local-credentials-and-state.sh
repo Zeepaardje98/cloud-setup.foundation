@@ -63,9 +63,13 @@ fi
 export AWS_ACCESS_KEY_ID="${ACCESS_KEY_LOCAL}"
 export AWS_SECRET_ACCESS_KEY="${SECRET_KEY_LOCAL}"
 
+# Ensure backend file is present(since we disabled it earlier)
+BACKEND_FILE="backend.tf"
+if [[ -f ${BACKEND_FILE}.disabled ]]; then mv "${BACKEND_FILE}.disabled" "${BACKEND_FILE}"; fi
+
 # After successful apply, migrate state from local to remote, so later runs use remote state.
 echo "[INFO] Migrating state from local to remote."
-if ! terraform init -backend-config="${SHARED_BACKEND_HCL}" -backend-config="key=${STATE_KEY}"; then
+if ! terraform init -backend-config="${SHARED_BACKEND_HCL}" -backend-config="key=${STATE_KEY}" -migrate-state; then
     echo "[WARNING] Terraform init with remote state failed."
     exit 1
 else

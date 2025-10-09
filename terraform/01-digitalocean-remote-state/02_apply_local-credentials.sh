@@ -13,10 +13,6 @@ else
   exit 1
 fi
 
-# Ensure backend file is present(since the run using local state can disable it)
-BACKEND_FILE="backend.tf"
-if [[ -f ${BACKEND_FILE}.disabled ]]; then mv "${BACKEND_FILE}.disabled" "${BACKEND_FILE}"; fi
-
 # Get local AWS credentials needed for remote state
 AWS_CREDENTIALS_FILE="${ROOT_DIR}/../.aws/credentials"
 AWS_PROFILE="digitalocean-spaces"

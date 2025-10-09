@@ -6,11 +6,14 @@
 # - Read/Write access to Spaces Keys
 do_token = "your_digitalocean_api_token_here"
 
-# DigitalOcean region
+# DigitalOcean region (defaults to "nyc1")
 region = "ams3"  # Options: nyc1, nyc2, nyc3, sfo1, sfo2, sfo3, tor1, ams2, ams3, fra1, lon1, sing1, sgp1, blr1
 
-# Project name (optional - defaults to "Default")
-# Use "Default" to use existing default project, or specify a name to create a new project
+# Project name (defaults to "Default")
+# Use "Default" to use existing default project, or specify a name to create a new project.
+#
+# IMPORTANT: If you change this, also make sure to change the s3 backend configuration(backend.hcl) bucket,
+# since the remote state bucket name is derived partly from the project_name.
 project_name = "Organisation Infrastructure"
 
 # Project description, purpose, and environment (only used when creating custom projects)
