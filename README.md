@@ -11,24 +11,40 @@ This repository bootstraps the foundational cloud resources for an organization 
 - Bash shell (Linux/macOS, or Windows via WSL/Git Bash)
 - Terraform ~> 1.11
 - DigitalOcean account and API token (personal access token)
-- GitHub organization and a fine‑grained personal access token
-  - Organization permissions: Actions = Read and write (for org secrets/variables)
-  - Set provider `owner` or export `GITHUB_OWNER`
+  - Read/Write access to Projects
+  - Read/Write access to Spaces (Object Storage)
+  - Read/Write access to Spaces Keys
+- GitHub organization and two fine‑grained personal access tokens:
+  - Organization Token (used in Step 2)
+    - Repository access: Public repositories
+    - Organizations: Read/Write to Secrets
+    - Organizations: Read/Write to Variables
+  - Repository Token (used in Step 3)
+    - Repository access: All repositories (first run), or the created repository on subsequent runs
+    - Repositories: Read/Write to Administration
+    - Repositories: Read/Write to Contents
+    - Repositories: Read/Write to Secrets
+    - Repositories: Read/Write to Variables
 
 ## Repository Layout
 
 - `terraform/01-digitalocean-remote-state/` — creates the Spaces bucket and access keys for Terraform remote state
 - `terraform/02-github-organization/` — configures org‑level GitHub Actions secrets/variables for remote state
 - `terraform/03-github-foundation-repo/` — creates a repository for this codebase and seeds CI variables
-- `terraform/backend.hcl` — shared backend configuration for DigitalOcean Spaces (S3 compatible)
+- `terraform/.env.example` — template for environment variables (copy to `.env` and fill in your values)
+- `scripts/common.sh` — shared helper functions for Terraform deployment
 
 ## Getting started
-Step 1 - 3 are first ran locally and require variables from their respective terraform.tfvars.
+Step 1 - 3 are first ran locally and require local environment variables. First, copy the environment template and fill in your values:
+
+```bash
+cd terraform
+cp .env.example .env
+# Edit .env with your actual values
+```
 
 ### Step 1: Create remote state in DigitalOcean
 This step creates the AWS-compatible Spaces bucket and two keys for accessing this bucket. One of the keys is automatically added as plaintext in `terraform/.aws/credentials`, since the next steps require this key.
-- Use local `.tfvars` (copy from `terraform/01-digitalocean-remote-state/terraform.tfvars.example`)
-- Requires a DigitalOcean API token (see `terraform/01-digitalocean-remote-state/terraform.tfvars.example`).
 
 ```
 cd ./terraform
@@ -44,8 +60,6 @@ Use this only if you need to make further changes to the remote‑state stack be
 
 ### Step 2: Configure GitHub organization secrets/variables
 This step configures your GitHub organization to hold the remote state access keys as org‑level secrets/variables used by CI runners.
-- Use local `.tfvars` (copy from `terraform/02-github-organization/terraform.tfvars.example`)
-- Requires a GitHub token (see `terraform/02-github-organization/terraform.tfvars.example`)
 
 ```
 ./02-github-organization/01_apply_local-credentials.sh
@@ -53,8 +67,6 @@ This step configures your GitHub organization to hold the remote state access ke
 
 ### Step 3: Create the foundation repository in GitHub
 This step creates a repository for this codebase and configures the variables needed for CI re‑runs of this and prior steps.
-- Use local `.tfvars` (copy from `terraform/03-github-foundation-repo/terraform.tfvars.example`)
-- Requires a GitHub token (see `terraform/03-github-foundation-repo/terraform.tfvars.example`).
 
 ```
 ./03-github-foundation-repo/01_apply_with_local_credentials.sh
@@ -66,7 +78,5 @@ Each directory includes an `apply.sh` that can be executed by GitHub Actions. Th
 
 ### Notes
 
-- Remote state backend settings are in `terraform/backend.hcl` and are shared by stacks.
+- Remote state backend configuration is generated dynamically by the `generate_backend_file` function in `scripts/common.sh`
 - Scripts securely clean up local state files after successful migration to remote state. If `shred` is not available, cleanup is skipped with a warning.
-
-
