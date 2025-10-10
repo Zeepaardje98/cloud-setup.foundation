@@ -10,21 +10,22 @@ This repository bootstraps the foundational cloud resources for an organization 
 
 - Bash shell (Linux/macOS, or Windows via WSL/Git Bash)
 - Terraform ~> 1.11
-- DigitalOcean account and API token (personal access token)
+- DigitalOcean account and API token (personal access token):
+  **Digitalocean Token**
   - Read/Write access to Projects
   - Read/Write access to Spaces (Object Storage)
   - Read/Write access to Spaces Keys
 - GitHub organization and two fine‑grained personal access tokens:
-  - Organization Token (used in Step 2)
-    - Repository access: Public repositories
-    - Organizations: Read/Write to Secrets
-    - Organizations: Read/Write to Variables
-  - Repository Token (used in Step 3)
-    - Repository access: All repositories (first run), or the created repository on subsequent runs
-    - Repositories: Read/Write to Administration
-    - Repositories: Read/Write to Contents
-    - Repositories: Read/Write to Secrets
-    - Repositories: Read/Write to Variables
+  **Organization Token** (used in Step 2)
+  - Repository access: Public repositories
+  - Organizations: Read/Write to Secrets
+  - Organizations: Read/Write to Variables
+  **Repository Token** (used in Step 3)
+  - Repository access: All repositories (first run), or the created repository on subsequent runs
+  - Repositories: Read/Write to Administration
+  - Repositories: Read/Write to Contents
+  - Repositories: Read/Write to Secrets
+  - Repositories: Read/Write to Variables
 
 ## Repository Layout
 
