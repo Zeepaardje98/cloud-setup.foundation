@@ -12,7 +12,7 @@ This repository bootstraps the foundational cloud resources for an organization 
 - Terraform ~> 1.11
 - DigitalOcean account and API token (personal access token):
   
-  **DigitalOcean Token**:
+  **DigitalOcean Token**
   - Read/Write access to Projects
   - Read/Write access to Spaces (Object Storage)
   - Read/Write access to Spaces Keys
@@ -78,7 +78,11 @@ This step creates a repository for this codebase and configures the variables ne
 
 ### CI Re‑runs
 
-Each directory includes an `apply.sh` that can be executed by GitHub Actions. The local wrapper scripts (`01_*` / `02_*`) simply export credentials and call the corresponding `./apply.sh`. With the workflows in `.github/`, CI can re‑run the same deployments using the org secrets/variables configured in Step 2.
+Each directory includes an `apply.sh` that can be executed by GitHub Actions.
+
+The local wrapper scripts (`01_*` / `02_*`) simply export local AWS credentials for remote state, and local environment variables, and call the corresponding `./apply.sh`.
+
+With the workflows in `.github/`, CI can re‑run the same deployments using the org secrets/variables configured in Step 2.
 
 ### Notes
 
