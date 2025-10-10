@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     paths:
-      - 'deployment/foundation/terraform/02-github-organization/**'
+      - 'terraform/02-github-organization/**'
 
 jobs:
   apply:
@@ -33,6 +33,6 @@ jobs:
         uses: hashicorp/setup-terraform@v3
 
       - name: Apply GitHub organization stack
-        working-directory: deployment/foundation/terraform/02-github-organization
+        working-directory: terraform/02-github-organization
         run: |
           ./apply.sh

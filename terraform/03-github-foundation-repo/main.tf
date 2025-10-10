@@ -40,8 +40,7 @@ resource "github_repository" "foundation" {
   description = var.repository_description
 
   visibility = var.repository_visibility
-  auto_init  = var.auto_init
-  topics     = var.topics
+  is_template = var.is_template
 
   template {
     owner      = var.template_owner
@@ -117,16 +116,6 @@ resource "github_actions_variable" "repository_visibility" {
   variable_name = "REPOSITORY_VISIBILITY"
   value       = var.repository_visibility
 }
-resource "github_actions_variable" "auto_init" {
-  repository  = github_repository.foundation.name
-  variable_name = "AUTO_INIT"
-  value       = var.auto_init
-}
-resource "github_actions_variable" "topics" {
-  repository  = github_repository.foundation.name
-  variable_name = "TOPICS"
-  value       = join(",", var.topics)
-}
 resource "github_actions_variable" "template_owner" {
   repository  = github_repository.foundation.name
   variable_name = "TEMPLATE_OWNER"
@@ -136,4 +125,9 @@ resource "github_actions_variable" "template_repository" {
   repository  = github_repository.foundation.name
   variable_name = "TEMPLATE_REPOSITORY"
   value       = var.template_repository
+}
+resource "github_actions_variable" "is_template" {
+  repository  = github_repository.foundation.name
+  variable_name = "IS_TEMPLATE"
+  value       = var.is_template
 }

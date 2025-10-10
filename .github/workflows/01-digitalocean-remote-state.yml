@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     paths:
-      - 'deployment/foundation/terraform/01-digitalocean-remote-state/**'
+      - 'terraform/01-digitalocean-remote-state/**'
 
 jobs:
   apply:
@@ -37,7 +37,7 @@ jobs:
         uses: hashicorp/setup-terraform@v3
 
       - name: Apply remote state stack
-        working-directory: deployment/foundation/terraform/01-digitalocean-remote-state
+        working-directory: terraform/01-digitalocean-remote-state
         run: |
           ./apply.sh
 

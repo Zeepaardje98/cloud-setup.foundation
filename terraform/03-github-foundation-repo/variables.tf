@@ -41,7 +41,7 @@ variable "topics" {
 variable "template_owner" {
   description = "Owner of the template repository"
   type        = string
-  default     = "Zeepaardje98"
+  default     = "Ricardo-van-Aken"
 }
 
 variable "template_repository" {
@@ -50,4 +50,9 @@ variable "template_repository" {
   default     = "cloud-setup.foundation"
 }
 
+variable "is_template" {
+  description = "Whether to make this repository a template repository"
+  type        = bool
+  default     = false
+}
 

@@ -4,7 +4,7 @@ endpoints = {
 	s3 = "https://ams3.digitaloceanspaces.com"
 }
 
-bucket  = "organisation-infrastructure.terraform-state-bucket"
+bucket  = "terraform-state-bucket"
 region  = "us-east-1"
 
 # AWS-specific checks disabled for Spaces

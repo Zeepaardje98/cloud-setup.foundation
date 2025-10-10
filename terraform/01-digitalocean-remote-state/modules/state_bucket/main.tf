@@ -17,14 +17,14 @@ data "digitalocean_project" "existing" {
 
 # Create DigitalOcean Space for remote state using the main provider
 resource "digitalocean_spaces_bucket" "terraform_state" {
-  name          = "${lower(replace(data.digitalocean_project.existing.name, " ", "-"))}.terraform-state-bucket"
+  name          = "terraform-state-bucket"
   region        = var.region
   force_destroy = true
 }
 
 # Create a bucket-specific Spaces access key for local usage (e.g., engineers running Terraform locally)
 resource "digitalocean_spaces_key" "terraform_state_local" {
-  name = "${lower(replace(data.digitalocean_project.existing.name, " ", "-"))}.terraform-state-key-local"
+  name = "terraform-state-bucket.key-local"
 
   grant {
     bucket     = digitalocean_spaces_bucket.terraform_state.name
@@ -34,7 +34,7 @@ resource "digitalocean_spaces_key" "terraform_state_local" {
 
 # Create a bucket-specific Spaces access key for CI/CD usage (to be stored in GitHub org secrets)
 resource "digitalocean_spaces_key" "terraform_state_ci" {
-  name = "${lower(replace(data.digitalocean_project.existing.name, " ", "-"))}.terraform-state-key-ci"
+  name = "terraform-state-bucket.key-ci"
 
   grant {
     bucket     = digitalocean_spaces_bucket.terraform_state.name

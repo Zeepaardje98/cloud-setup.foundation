@@ -1,14 +1,16 @@
 # Copy this file to terraform.tfvars and fill in your values
 
 # GitHub fine-grained personal access token(PAT). Resource owner should be your organization. Requires:
-# - Repository access: Public repositories
-# - Organizations - Read/Write to Secrets
-# - Organizations - Read/Write to Variables
+# - Repository access: All repositories on the first run(since it still has to create the repository). On subsequent
+#   runs only access to the repository created during the first run is required.
+# - Repositories - Read/Write to Administration
+# - Repositories - Read/Write to Contents
+# - Repositories - Read/Write to Secrets
+# - Repositories - Read/Write to Variables
 github_token = "your_github_personal_access_token_here"
 
 # Repository Settings
 # repository_name        = "platform-foundation"
 # repository_description = "Organisation-wide platform foundation: state, org config, shared cloud primitives."
 # repository_visibility  = "private"
-# auto_init              = true
-# topics                 = ["platform", "foundation", "infrastructure"]
+# is_template            = false
