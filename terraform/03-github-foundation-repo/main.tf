@@ -30,7 +30,7 @@ data "terraform_remote_state" "github_organisation" {
 
 # Configure the GitHub provider with the same organization as the 02-github-organization step
 provider "github" {
-  token = var.github_token
+  token = var.github_repo_token
   owner = data.terraform_remote_state.github_organisation.outputs.github_organisation
 }
 

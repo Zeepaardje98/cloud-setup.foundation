@@ -13,20 +13,12 @@ else
   exit 1
 fi
 
-# Load environment variables from .env file
-load_env "${ROOT_DIR}/../.env"
-
-# Shared backend.hcl lives two levels up at deployment/terraform/backend.hcl
-SHARED_BACKEND_HCL="${ROOT_DIR}/../backend.hcl"
-# State key for this stack
-STATE_KEY="foundation/01-digitalocean-remote-state/terraform.tfstate"
-
 # Ensure backend file is disabled
 BACKEND_FILE="backend.tf"
 if [[ -f ${BACKEND_FILE} ]]; then mv "${BACKEND_FILE}" "${BACKEND_FILE}.disabled"; fi
 
 # Standard init/plan/show/apply
-# Initialize passing shared backend config and a unique key for this stack
+load_env "${ROOT_DIR}/../.env"
 if ! terraform init; then
     echo "[WARNING] Terraform init with local state failed."
     exit 1
@@ -71,9 +63,11 @@ BACKEND_FILE="backend.tf"
 if [[ -f ${BACKEND_FILE}.disabled ]]; then mv "${BACKEND_FILE}.disabled" "${BACKEND_FILE}"; fi
 
 # Generate backend.hcl from bucket region and name
+SHARED_BACKEND_HCL="${ROOT_DIR}/../backend.hcl"
 generate_backend_file "${TF_VAR_region}" "${TF_VAR_bucket_name}" "${SHARED_BACKEND_HCL}"
 
 # After successful apply, migrate state from local to remote, so later runs use remote state.
+STATE_KEY="foundation/01-digitalocean-remote-state/terraform.tfstate"
 echo "[INFO] Migrating state from local to remote."
 if ! terraform init -backend-config="${SHARED_BACKEND_HCL}" -backend-config="key=${STATE_KEY}" -migrate-state; then
     echo "[WARNING] Terraform init with remote state failed."

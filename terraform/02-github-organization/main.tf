@@ -12,7 +12,7 @@ terraform {
 
 # GitHub provider configuration
 provider "github" {
-  token = var.github_token
+  token = var.github_org_token
   owner = var.github_organisation
 }
 
@@ -56,13 +56,13 @@ resource "github_actions_organization_variable" "organisation_name" {
   value           = var.github_organisation
 }
 # Expose DigitalOcean Spaces bucket name and region as a GitHub organization variable
-resource "github_actions_variable" "do_bucket_name" {
-  repository  = github_repository.foundation.name
+resource "github_actions_organization_variable" "do_bucket_name" {
   variable_name = "DO_STATE_BUCKET_NAME"
+  visibility      = "private"
   value       = data.terraform_remote_state.do_foundation.outputs.bucket_name
 }
-resource "github_actions_variable" "do_bucket_region" {
-  repository  = github_repository.foundation.name
+resource "github_actions_organization_variable" "do_bucket_region" {
   variable_name = "DO_STATE_BUCKET_REGION"
+  visibility      = "private"
   value       = data.terraform_remote_state.do_foundation.outputs.region
 }
