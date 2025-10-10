@@ -4,11 +4,6 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "${ROOT_DIR}"
 
-# Shared backend.hcl lives two levels up at deployment/terraform/backend.hcl
-SHARED_BACKEND_HCL="${ROOT_DIR}/../backend.hcl"
-# State key for this stack
-STATE_KEY="foundation/01-digitalocean-remote-state/terraform.tfstate"
-
 # Load helpers
 COMMON_SH="${ROOT_DIR}/../../scripts/common.sh"
 if [[ -f "${COMMON_SH}" ]]; then
@@ -17,6 +12,14 @@ else
   echo "[ERROR] Helper not found at path: ${COMMON_SH}"
   exit 1
 fi
+
+# Load environment variables from .env file
+load_env "${ROOT_DIR}/../.env"
+
+# Shared backend.hcl lives two levels up at deployment/terraform/backend.hcl
+SHARED_BACKEND_HCL="${ROOT_DIR}/../backend.hcl"
+# State key for this stack
+STATE_KEY="foundation/01-digitalocean-remote-state/terraform.tfstate"
 
 # Ensure backend file is disabled
 BACKEND_FILE="backend.tf"
@@ -66,6 +69,9 @@ export AWS_SECRET_ACCESS_KEY="${SECRET_KEY_LOCAL}"
 # Ensure backend file is present(since we disabled it earlier)
 BACKEND_FILE="backend.tf"
 if [[ -f ${BACKEND_FILE}.disabled ]]; then mv "${BACKEND_FILE}.disabled" "${BACKEND_FILE}"; fi
+
+# Generate backend.hcl from bucket name
+generate_backend_file "${TF_VAR_bucket_name}" "${SHARED_BACKEND_HCL}"
 
 # After successful apply, migrate state from local to remote, so later runs use remote state.
 echo "[INFO] Migrating state from local to remote."

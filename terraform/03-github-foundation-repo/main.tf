@@ -16,7 +16,7 @@ data "terraform_remote_state" "github_organisation" {
     endpoints = {
       s3 = "https://ams3.digitaloceanspaces.com"
     }
-    bucket                      = "organisation-infrastructure.terraform-state-bucket"
+    bucket                      = "${var.bucket_name}"
     key                         = "foundation/02-github-organisation/terraform.tfstate"
     region                      = "us-east-1"
     skip_credentials_validation = true
@@ -63,7 +63,7 @@ data "terraform_remote_state" "do_foundation" {
     endpoints = {
       s3 = "https://ams3.digitaloceanspaces.com"
     }
-    bucket                      = "organisation-infrastructure.terraform-state-bucket"
+    bucket                      = "${var.bucket_name}"
     key                         = "foundation/01-digitalocean-remote-state/terraform.tfstate"
     region                      = "us-east-1"
     skip_credentials_validation = true

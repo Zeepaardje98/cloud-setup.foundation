@@ -57,3 +57,8 @@ output "region" {
   value       = var.region
   description = "DigitalOcean region used in this stack."
 }
+
+output "bucket_name" {
+  value       = var.bucket_name
+  description = "DigitalOcean Spaces bucket name used for remote state storage."
+}

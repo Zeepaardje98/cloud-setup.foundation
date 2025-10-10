@@ -26,18 +26,6 @@ variable "repository_visibility" {
   }
 }
 
-variable "auto_init" {
-  description = "Initialize the repository with a README"
-  type        = bool
-  default     = true
-}
-
-variable "topics" {
-  description = "Repository topics/tags"
-  type        = list(string)
-  default     = ["platform", "foundation", "infrastructure"]
-}
-
 variable "template_owner" {
   description = "Owner of the template repository"
   type        = string
@@ -54,5 +42,10 @@ variable "is_template" {
   description = "Whether to make this repository a template repository"
   type        = bool
   default     = false
+}
+
+variable "bucket_name" {
+  description = "DigitalOcean Spaces bucket name for remote state storage. Must match the bucket name used in 01-digitalocean-remote-state."
+  type        = string
 }
 

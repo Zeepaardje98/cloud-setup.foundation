@@ -33,3 +33,8 @@ variable "project_environment" {
   type        = string
   default     = "development"
 }
+
+variable "bucket_name" {
+  description = "Name for the DigitalOcean Spaces bucket used for remote state storage. Must be unique within its own region."
+  type        = string
+}

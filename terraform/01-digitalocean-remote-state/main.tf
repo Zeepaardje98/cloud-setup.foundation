@@ -53,6 +53,7 @@ module "state_bucket" {
 
   region                    = var.region
   project_id                = module.project.project_id
+  bucket_name               = var.bucket_name
 
   providers = {
     digitalocean = digitalocean.DO_spaces_key
