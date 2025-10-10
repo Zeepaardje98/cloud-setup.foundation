@@ -18,5 +18,8 @@ else
   exit 1
 fi
 
+# Generate backend.hcl from bucket region and name
+generate_backend_file "${TF_VAR_region}" "${TF_VAR_bucket_name}" "${SHARED_BACKEND_HCL}"
+
 # Standard init/plan/show/apply
 terraform_deploy "${SHARED_BACKEND_HCL}" "${STATE_KEY}"

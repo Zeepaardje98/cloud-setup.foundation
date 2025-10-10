@@ -84,7 +84,11 @@ The local wrapper scripts (`01_*` / `02_*`) simply export local AWS credentials 
 
 With the workflows in `.github/`, CI can re‑run the same deployments using the org secrets/variables configured in Step 2.
 
+### Later steps and Cleanup
+
 ### Notes
 
 - Remote state backend configuration is generated dynamically by the `generate_backend_file` function in `scripts/common.sh`
 - Scripts securely clean up local state files after successful migration to remote state. If `shred` is not available, cleanup is skipped with a warning.
+
+## Design decisions

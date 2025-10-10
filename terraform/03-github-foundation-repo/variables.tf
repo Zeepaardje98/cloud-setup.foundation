@@ -44,8 +44,13 @@ variable "is_template" {
   default     = false
 }
 
+# DigitalOcean spaces variables for connecting to the remote state bucket created in 01-digitalocean-remote-state
+variable "region" {
+  description = "DigitalOcean remote state bucket region."
+  type        = string
+  default     = "nyc1"
+}
 variable "bucket_name" {
-  description = "DigitalOcean Spaces bucket name for remote state storage. Must match the bucket name used in 01-digitalocean-remote-state."
+  description = "DigitalOcean remote state bucket name."
   type        = string
 }
-

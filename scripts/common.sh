@@ -19,11 +19,12 @@ load_env() {
   fi
 }
 
-# Generate backend.hcl from bucket name
+# Generate backend.hcl from bucket region and name
 generate_backend_file() {
-  local bucket_name="${1:-}"
-  local backend_file="${2:-backend.hcl}"
-  
+  local spaces_region="${1:-}"
+  local bucket_name="${2:-}"
+  local backend_file="${3:-backend.hcl}"
+
   if [[ -z "${bucket_name}" ]]; then
     echo "[ERROR] Bucket name is required to generate backend.hcl" >&2
     return 1
@@ -35,7 +36,7 @@ generate_backend_file() {
 # Shared backend configuration for DigitalOcean Spaces (S3-compatible)
 
 endpoints = {
-	s3 = "https://ams3.digitaloceanspaces.com"
+	s3 = "https://${spaces_region}.digitaloceanspaces.com"
 }
 
 bucket  = "${bucket_name}"
@@ -51,7 +52,7 @@ skip_s3_checksum            = true
 # Enable lockfile-based state locking in Spaces (Terraform >= 1.11)
 use_lockfile = true
 EOF
-  
+
   echo "[SUCCESS] Generated ${backend_file}" >&2
 }
 

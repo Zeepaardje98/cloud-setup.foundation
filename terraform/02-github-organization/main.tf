@@ -21,7 +21,7 @@ data "terraform_remote_state" "do_foundation" {
   backend = "s3"
   config = {
     endpoints = {
-      s3 = "https://ams3.digitaloceanspaces.com"
+      s3 = "https://${var.region}.digitaloceanspaces.com"
     }
     bucket                      = "${var.bucket_name}"
     key                         = "foundation/01-digitalocean-remote-state/terraform.tfstate"
@@ -54,4 +54,15 @@ resource "github_actions_organization_variable" "organisation_name" {
   variable_name = "ORGANISATION_NAME"
   visibility      = "private"
   value           = var.github_organisation
+}
+# Expose DigitalOcean Spaces bucket name and region as a GitHub organization variable
+resource "github_actions_variable" "do_bucket_name" {
+  repository  = github_repository.foundation.name
+  variable_name = "DO_STATE_BUCKET_NAME"
+  value       = data.terraform_remote_state.do_foundation.outputs.bucket_name
+}
+resource "github_actions_variable" "do_bucket_region" {
+  repository  = github_repository.foundation.name
+  variable_name = "DO_STATE_BUCKET_REGION"
+  value       = data.terraform_remote_state.do_foundation.outputs.region
 }

@@ -14,7 +14,7 @@ data "terraform_remote_state" "github_organisation" {
   backend = "s3"
   config = {
     endpoints = {
-      s3 = "https://ams3.digitaloceanspaces.com"
+      s3 = "https://${var.region}.digitaloceanspaces.com"
     }
     bucket                      = "${var.bucket_name}"
     key                         = "foundation/02-github-organisation/terraform.tfstate"
@@ -61,7 +61,7 @@ data "terraform_remote_state" "do_foundation" {
   backend = "s3"
   config = {
     endpoints = {
-      s3 = "https://ams3.digitaloceanspaces.com"
+      s3 = "https://${var.region}.digitaloceanspaces.com"
     }
     bucket                      = "${var.bucket_name}"
     key                         = "foundation/01-digitalocean-remote-state/terraform.tfstate"
@@ -93,11 +93,6 @@ resource "github_actions_variable" "do_project_environment" {
   repository  = github_repository.foundation.name
   variable_name = "DO_ORGANISATION_PROJECT_ENVIRONMENT"
   value       = data.terraform_remote_state.do_foundation.outputs.project_environment
-}
-resource "github_actions_variable" "do_bucket_region" {
-  repository  = github_repository.foundation.name
-  variable_name = "DO_STATE_BUCKET_REGION"
-  value       = data.terraform_remote_state.do_foundation.outputs.region
 }
 
 # Add this step's(03-github-foundation-repo) input variables as GitHub repository variables

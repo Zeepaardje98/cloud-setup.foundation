@@ -12,6 +12,10 @@ jobs:
     permissions:
       contents: read
     env:
+      # DigitalOcean Spaces bucket name, used for access to spaces 'remote state' bucket for terraform. Added when creating the github
+      # repository through terraform in 03-github-foundation-repo.yml
+      TF_VAR_bucket_name: ${{ vars.DO_STATE_BUCKET_NAME }}
+
       # AWS variables, used for access to spaces 'remote state' bucket for terraform. Added when creating the github
       # repository through terraform in 03-github-foundation-repo.yml
       AWS_ACCESS_KEY_ID: ${{ secrets.SPACES_ACCESS_KEY }}

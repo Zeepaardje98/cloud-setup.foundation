@@ -70,8 +70,8 @@ export AWS_SECRET_ACCESS_KEY="${SECRET_KEY_LOCAL}"
 BACKEND_FILE="backend.tf"
 if [[ -f ${BACKEND_FILE}.disabled ]]; then mv "${BACKEND_FILE}.disabled" "${BACKEND_FILE}"; fi
 
-# Generate backend.hcl from bucket name
-generate_backend_file "${TF_VAR_bucket_name}" "${SHARED_BACKEND_HCL}"
+# Generate backend.hcl from bucket region and name
+generate_backend_file "${TF_VAR_region}" "${TF_VAR_bucket_name}" "${SHARED_BACKEND_HCL}"
 
 # After successful apply, migrate state from local to remote, so later runs use remote state.
 echo "[INFO] Migrating state from local to remote."

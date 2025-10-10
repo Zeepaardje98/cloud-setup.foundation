@@ -4,6 +4,10 @@ variable "do_token" {
   sensitive   = true
 }
 
+variable "bucket_name" {
+  description = "Name for the DigitalOcean Spaces bucket used for remote state storage. Must be unique within its own region."
+  type        = string
+}
 variable "region" {
   description = "DigitalOcean region."
   type        = string
@@ -32,9 +36,4 @@ variable "project_environment" {
   description = "Project environment given to the project created in this stack."
   type        = string
   default     = "development"
-}
-
-variable "bucket_name" {
-  description = "Name for the DigitalOcean Spaces bucket used for remote state storage. Must be unique within its own region."
-  type        = string
 }
