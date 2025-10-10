@@ -3,6 +3,58 @@ set -euo pipefail
 
 # Common Terraform helper functions for apply scripts
 
+# Load environment variables from .env file
+load_env() {
+  local env_file="${1:-.env}"
+  
+  if [[ -f "${env_file}" ]]; then
+    echo "[INFO] Loading environment variables from ${env_file}" >&2
+    set -a
+    source "${env_file}"
+    set +a
+    echo "[SUCCESS] Environment variables loaded" >&2
+  else
+    echo "[WARNING] Environment file not found: ${env_file}" >&2
+    echo "[INFO] Make sure to set TF_VAR_* variables manually or create .env file" >&2
+  fi
+}
+
+# Generate backend.hcl from bucket name
+generate_backend_file() {
+  local bucket_name="${1:-}"
+  local backend_file="${2:-backend.hcl}"
+  
+  if [[ -z "${bucket_name}" ]]; then
+    echo "[ERROR] Bucket name is required to generate backend.hcl" >&2
+    return 1
+  fi
+  
+  echo "[INFO] Generating ${backend_file} with bucket name: ${bucket_name}" >&2
+  
+  cat > "${backend_file}" << EOF
+# Shared backend configuration for DigitalOcean Spaces (S3-compatible)
+
+endpoints = {
+	s3 = "https://ams3.digitaloceanspaces.com"
+}
+
+bucket  = "${bucket_name}"
+region  = "us-east-1"
+
+# AWS-specific checks disabled for Spaces
+skip_credentials_validation = true
+skip_requesting_account_id  = true
+skip_metadata_api_check     = true
+skip_region_validation      = true
+skip_s3_checksum            = true
+
+# Enable lockfile-based state locking in Spaces (Terraform >= 1.11)
+use_lockfile = true
+EOF
+  
+  echo "[SUCCESS] Generated ${backend_file}" >&2
+}
+
 # check_aws_credentials AWS_CREDENTIALS_FILE AWS_PROFILE
 # Returns 0 if credentials file exists and contains the profile, else 1
 check_local_aws_credentials() {

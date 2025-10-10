@@ -49,3 +49,9 @@ terraform.rc
 # AWS credentials (contains secrets)
 **/.aws/credentials
 **/.aws/config
+
+# Environment variables (contains secrets)
+.env
+
+# Backend file (used for remote state storage when running terraform locally)
+backend.hcl
