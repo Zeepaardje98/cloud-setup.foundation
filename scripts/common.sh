@@ -196,7 +196,6 @@ cleanup_local_state() {
   fi
 
   if command -v shred >/dev/null 2>&1; then
-    if [[ -f "${cleanup_dir}/.tfplan.local" ]]; then shred -u -n 3 -z -- "${cleanup_dir}/.tfplan.local"; fi
     if [[ -f "${cleanup_dir}/terraform.tfstate" ]]; then shred -u -n 3 -z -- "${cleanup_dir}/terraform.tfstate"; fi
     if [[ -f "${cleanup_dir}/terraform.tfstate.backup" ]]; then shred -u -n 3 -z -- "${cleanup_dir}/terraform.tfstate.backup"; fi
   else
