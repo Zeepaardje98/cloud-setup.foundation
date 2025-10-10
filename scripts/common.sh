@@ -199,10 +199,6 @@ cleanup_local_state() {
     if [[ -f "${cleanup_dir}/.tfplan.local" ]]; then shred -u -n 3 -z -- "${cleanup_dir}/.tfplan.local"; fi
     if [[ -f "${cleanup_dir}/terraform.tfstate" ]]; then shred -u -n 3 -z -- "${cleanup_dir}/terraform.tfstate"; fi
     if [[ -f "${cleanup_dir}/terraform.tfstate.backup" ]]; then shred -u -n 3 -z -- "${cleanup_dir}/terraform.tfstate.backup"; fi
-    if [[ -d "${cleanup_dir}/.terraform" ]]; then
-      find "${cleanup_dir}/.terraform" -type f -exec shred -u -n 3 -z {} + || true
-      rm -rf -- "${cleanup_dir}/.terraform" || true
-    fi
   else
     echo "[WARNING] shred is not installed, skipping secure deletion of local Terraform plan and state files." >&2
   fi
