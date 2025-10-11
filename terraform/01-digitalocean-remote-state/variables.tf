@@ -29,7 +29,7 @@ variable "project_description" {
 variable "project_purpose" {
   description = "Project purpose given to the project created in this stack."
   type        = string
-  default     = "Hold Organization Resources such as remote terraform state, which are shared throughout the organisation."
+  default     = "Hold Organisation Resources such as remote terraform state, which are shared throughout the organisation."
 }
 
 variable "project_environment" {
